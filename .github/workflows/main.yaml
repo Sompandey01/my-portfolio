@@ -1,26 +1,26 @@
-name: Copy website to S3
+name: my-portfolio-deployment # Name of the deployment
 
 on:
-  push:
+  push: # Trigger the workflow when changes are pushed
     branches:
-    - main
+      - main
 
-jobs:
-    copy-website-to-s3:
-      runs-on: ubuntu-latest
-      steps:
-        - name: checkout
-          uses: actions/checkout@master
+jobs: # Any name can be provided
+  build-and-deploy:
+    runs-on: ubuntu-latest # Latest version of Ubuntu
+    steps:
+      - name: Checkout # Check out the repository's code into the workflow's execution environment.
+        uses: actions/checkout@v1 # Script actions
 
-        - name: sync s3
-          uses: jakejarvis/s3-sync-action@master
-          with:
-            args: --follow-symlinks --delete --exclude '.git/*' --size-only
-          env:
-            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_REGION: 'us-east-1'
-            SOURCE_DIR: './ '
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+         args: --follow-symlinks --delete --exclude '.git/*' --size-only
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-1'
+          SOURCE_DIR: './ '
 
 
